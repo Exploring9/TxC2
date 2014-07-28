@@ -20,6 +20,7 @@ var AddPersonalDetails = function(){
     data_personResidence = $('select[name=residence]').val();
     var show_personResidence = "residence="+data_personResidence;
     // This is to add the data to the html page
+    $('#personalDetails').empty();
     $('#personalDetails').append('<p id=personalDataDisplayed>'+show_personResidence+'</p>');
     console.log("This is the residence:"+show_personResidence);
 };
@@ -84,7 +85,7 @@ var SendingTheInformation = function(){
        type: 'POST',
        url: 'http://localhost:3000/tax_calculator/personalAndTaxInfo',
        data: {
-       	personal:                 data_personResidence,
+       	residence:                 data_personResidence,
        	sizesOfIncome: JSON.stringify(data_sizeOfIncome),
        	typesOfIncome: JSON.stringify(data_typeOfIncome),
        	locationsOfIncome: JSON.stringify(data_locationOfIncome)

@@ -40,3 +40,7 @@ gem 'spring',        group: :development
 
 #This is to access the mysql database:
 gem "mysql2"
+gem "sequel-rails" #comment it out when you want to work on active records
+gem "awesome_print"
+gem "tiny_tds"
+#gem "pg" #comment it out after connecting to postgresql
