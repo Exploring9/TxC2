@@ -1,0 +1,6 @@
+adapter: mysql2
+encoding: utf8
+database: DB_TxC_TESTING
+pool: 5
+username: test_no_password
+#password: TxC1

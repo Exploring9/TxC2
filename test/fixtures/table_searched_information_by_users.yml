@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  size_of_income: 
+  source_of_income: 
+  location: 
+
+two:
+  size_of_income: 
+  source_of_income: 
+  location: 
