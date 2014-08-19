@@ -40,7 +40,13 @@ gem 'spring',        group: :development
 
 #This is to access the mysql database:
 gem "mysql2"
-gem "sequel-rails" #comment it out when you want to work on active records
+#gem "sequel-rails" #comment it out when you want to work on active records
 gem "awesome_print"
 gem "tiny_tds"
 #gem "pg" #comment it out after connecting to postgresql
+# This is for json parsers to work
+gem 'json'
+# This is for sequel to work
+gem 'sequel'
+# This is for yaml to work (old version based on psych)
+#gem 'yaml' # I guess I need to require it

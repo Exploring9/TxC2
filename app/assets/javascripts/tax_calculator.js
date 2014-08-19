@@ -27,7 +27,7 @@ var AddPersonalDetails = function(){
 
 // Income Details (Get):
 var AddIncomeDetails = function(){
-    data_sizeOfIncome.push($('input[name=sizeOfIncome]').val());
+    data_sizeOfIncome.push(Number($('input[name=sizeOfIncome]').val()));
     data_typeOfIncome.push($('select[name=sourceOfIncome]').val());
     data_locationOfIncome.push($('select[name=locationOfIncome]').val());
     console.log("This is from income details:"+data_sizeOfIncome+"/"+data_typeOfIncome+"/"+data_locationOfIncome);
@@ -86,9 +86,9 @@ var SendingTheInformation = function(){
        url: 'http://localhost:3000/tax_calculator/personalAndTaxInfo',
        data: {
        	residence:                 data_personResidence,
-       	sizesOfIncome: JSON.stringify(data_sizeOfIncome),
-       	typesOfIncome: JSON.stringify(data_typeOfIncome),
-       	locationsOfIncome: JSON.stringify(data_locationOfIncome)
+       	sizes_of_income: JSON.stringify(data_sizeOfIncome),
+       	types_of_income: JSON.stringify(data_typeOfIncome),
+       	locations_of_income: JSON.stringify(data_locationOfIncome)
        	}
     });	
 };

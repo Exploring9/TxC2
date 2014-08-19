@@ -1,64 +1,28 @@
-require_relative '../../lib/parsers/params_parser'
+require_relative '../../lib/database_insertions/active_record_insertions' #This is to include a file
+require_relative '../../lib/tax_calculations_start/tax_calculations_start'
 
 class TaxCalculatorController < ApplicationController
-  include ParamsParser
+  include ActiveRecordInsertions #Needed to put the information in the database
+  include TaxCalculationsStart
   
   def index
   end
   
+  #This calls 3 functions:
+  # 1st - The function that will include all the data into the database
+  # 2nd - The function that will call the calculation of the taxes (Use the return from active_records_way_create to find the id)
+  # 3rd - The function will return the data that can be represented nicely in the front-end
+  
   def personalAndTaxInfo
     puts "This is the personalInfo method - the params received:"+params.inspect
     puts "This is the request body:"+ request.body.read
-    puts ParamsParser
-    parse_incoming_information(params);
+    
+    #This is to call the function to include values in the database
+    @id_info_searcher = active_records_way_create(params);
+    #This will calculate the tax rate and return it
+    start_the_tax_calculations(@id_info_searcher)
     
     #This allows this function to be called with ajax and render nothing on the web page
     render :nothing => true, :status => 200, :content_type => 'html' 
-
-    puts TableSearchedInformationByUsers.all
-    @testing_hash = {"residence"=>"LV"}
-    puts "This is @testing_hash"
-    puts @testing_hash
-    puts residence
-
-    rails_way_create(residence);
-    #mysql_way_create(residence)
-  end
-  
-  def mysql_way_create(residence)
-    sql_sentence = "INSERT INTO `DB_TxC_TESTING3`.`table_searched_information_by_users` 
-    (`id_searched_info`, `residence`, `size_of_income`, `source_of_income`)#
-     VALUES ('4', 'LV', '5000', '7');"
-
-    ActiveRecord::Base.connection.execute(sql_sentence);
-    show_tables_info = []
-    show_tables_info = ActiveRecord::Base.connection.execute("SHOW TABLES;").each do |record|
-      puts record
-    end;
-    #puts show_tables_info.methods
-    puts show_tables_info.inspect
-    
-    show_residence_info = ActiveRecord::Base.connection.execute("SELECT * FROM
-     table_searched_information_by_users").each do |record|
-       puts record
-  end
-  end
-  
-  
-  def rails_way_create(residence)
-    puts "This is residence in the rails_way_create"
-    puts residence
-    #I need to require this instance variable from my module
-    
-    @residence_info = TableSearchedInformationByUsers.new(@residence);
-
-    #@residence_info = TableSearchedInformationByUsers.new(params.permit(:residence, :sizesOfIncomeArray, :typesOfIncomeArray, :locationsOfIncomeArray));
-    
-    if @residence_info.save
-      puts "The residence info object saved"
-    end
-    
-    puts TableSearchedInformationByUsers.all
-  end
-  
+  end     
 end

@@ -21,6 +21,6 @@ module TxC2
     # config.i18n.default_locale = :de
     
     ### I need to get rid of this later###
-    config.action_controller.permit_all_parameters = true
+    config.action_controller.permit_all_parameters = false
   end
 end
