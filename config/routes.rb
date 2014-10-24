@@ -3,7 +3,11 @@ Rails.application.routes.draw do
   get 'about_us/index'
 
   root 'tax_calculator#index'
+  get '/', to: 'tax_calculator#index'
+   
   match '/tax_calculator/personalAndTaxInfo', to: 'tax_calculator#personalAndTaxInfo', :via => [ :post]
+  
+  match '/tax_calculator/sendInputData', to: 'tax_calculator#sendInputData', :via => [:get, :post]
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

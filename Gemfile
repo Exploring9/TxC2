@@ -50,3 +50,24 @@ gem 'json'
 gem 'sequel'
 # This is for yaml to work (old version based on psych)
 #gem 'yaml' # I guess I need to require it
+
+#This is to include the gem that will alow automatic creation of foreign keys
+gem 'foreigner'
+
+#This is so that I can use the JQUERY DATEPICKER (THE HTML INPUT=DATE as of 28/09/2014 doesn't work)
+gem 'jquery-ui-rails'
+
+#This is for test driven development: RSPEC
+group :development, :test do 
+  gem 'rspec-rails' 
+  gem 'factory_girl_rails' 
+end 
+
+group :test do 
+  gem 'faker' 
+  gem 'capybara' 
+  gem 'guard-rspec' 
+  gem 'launchy' 
+end 
+#End of testing
+#- See more at: http://everydayrails.com/2012/03/12/testing-series-rspec-setup.html#sthash.g3Z2nc9r.dpuf

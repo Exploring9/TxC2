@@ -1,3 +1,32 @@
 // Place all the styles related to the tax_calculator controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+body{
+.ui-datepicker {
+    background: #BFBFBF none;
+}
+
+#Button_Add_Income_Details {
+  position: relative;   
+  left: 195px;
+}
+
+.box{
+  margin: 20px;
+  height: 450px;
+  width:  320px;
+  border: 2.5px solid #B00100;
+  overflow-y: auto;
+}
+
+.left{
+  float: left;
+}
+
+.right{
+  float: right;
+}
+
+
+}

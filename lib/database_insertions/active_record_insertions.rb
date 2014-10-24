@@ -13,12 +13,16 @@ module ActiveRecordInsertions
       sizes_of_income = JSON.parse(params[:sizes_of_income]);
       types_of_income = JSON.parse(params[:types_of_income]);
       locations_of_income = JSON.parse(params[:locations_of_income]);
-  
+      currencies_of_income = JSON.parse(params[:currencies_of_income]);
+      date_of_income = JSON.parse(params[:date_of_income]);
+      
       sizes_of_income.each_index do |array_number| 
         TableSearchedInformationByUser.create(table_searcher_personal_information_id: legal_entity.id,
          sizes_of_income: sizes_of_income[array_number],
          types_of_income: types_of_income[array_number],
-         locations_of_income: locations_of_income[array_number]);
+         locations_of_income: locations_of_income[array_number],
+         currencies_of_income: currencies_of_income[array_number],
+         date_of_income: date_of_income[array_number]);
     end
     return_the_current_id(legal_entity);
   end

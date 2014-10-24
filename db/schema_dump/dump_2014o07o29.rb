@@ -1,4 +1,4 @@
-#Current version
+#Old version
 Sequel.migration do
   change do
     create_table(:LookUp_scope_of_tax) do

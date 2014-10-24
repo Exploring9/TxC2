@@ -12,6 +12,14 @@ development:
   username: TxC_Testing
   password: TxC1
 
+
+test:
+  adapter: mysql2
+  encoding: utf8
+  database: DB_TxC_TESTING_USER_TESTS
+  pool: 5
+  username: TxC_Testing
+  password: TxC1
 #default: &default
 #  adapter: sqlite3
 #  pool: 5
