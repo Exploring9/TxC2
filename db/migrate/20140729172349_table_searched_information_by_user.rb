@@ -13,6 +13,7 @@ class TableSearchedInformationByUser < ActiveRecord::Migration
       t.string :income_economic_sector
       t.string :income_specific_profession
       t.integer :table_searcher_personal_information_id
+      t.integer :income_controlling_interest
       t.timestamps
     end 
     add_foreign_key(:table_searched_information_by_users, :table_searcher_personal_informations, name: 'fk_tbl_srd_inf_by_users_tbl_srd_psl_info_KEY_tbl_srd_psl_inf_id')

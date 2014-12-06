@@ -19,23 +19,28 @@ class TaxCalculatorController < ApplicationController
   # 3rd - The function will return the data that can be represented nicely in the front-end
   
   def personalAndTaxInfo
-    puts "This is the personalInfo method - the params received:"+params.inspect
-    puts "This is the request body:"+ request.body.read
-    
+    puts "This is the personalInfo method - the params received:"; puts params;
+    puts "This is the request body:";# puts request.body.read;
+    puts "~~~~~~~~~~~~~~~~~~~~~~~~"
+    @params_for_calculator = request.body.read;
     #This is to call the function to include values in the database
-    @id_info_searcher = active_records_way_create(params);
+    @id_info_searcher = ActiveRecordInsertions::active_records_way_create(@params_for_calculator);
+    puts "This is @id_info_searcher";
+    puts @id_info_searcher;
     #This will calculate the tax rate and return it
-    start_the_tax_calculations(@id_info_searcher)
+    TaxCalculationsStart::start_the_tax_calculations(@id_info_searcher)
     
     #This allows this function to be called with ajax and render nothing on the web page
-    render :nothing => true, :status => 200, :content_type => 'json' 
+    @techno = '{"1":"Work_is_being_done"}';
+    @techno = JSON.parse(@techno);
+    puts @techno
+    render :json => @techno#, :status => 200 
   end    
   
   def sendInputData
     puts params
     array_to_store_html_elements = GetInputData::get_data_from_sequel(params)
-    @techno = "This is a serious test that works :_)"
-    render :json => array_to_store_html_elements#, :status => 200
+    render :json => array_to_store_html_elements, :status => 200 #See how :status => 200 affects the system
   end
    
 end

@@ -4,5 +4,5 @@ database: DB_TxC_TESTING
 pool: 5
 username: test_no_password
 #password: TxC1
-# how to create a schema dump: sequel -d mysql2://root:RRed92@localhost/DB_TxC_TESTING > db/schema_dump/dump_2014o10o15.rb
+# how to create a schema dump: sequel -d mysql2://root:RRed92@localhost/DB_TxC_TESTING > db/schema_dump/dump_2014o10o30.rb
 

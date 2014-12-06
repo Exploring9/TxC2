@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20140819205234) do
     t.string   "income_economic_sector"
     t.string   "income_specific_profession"
     t.integer  "table_searcher_personal_information_id"
+    t.integer  "income_controlling_interest"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

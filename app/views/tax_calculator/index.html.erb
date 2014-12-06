@@ -1,13 +1,11 @@
 <h3>This is where my tax calculator will be</h3>
-
+<div>Unspecified_country means that you don't have a residence in a country</div>
 <div class = "box left" id="Personal_Data_Class">
 	Enter your personal details:
 	<form name="Personal_Data_Class">
 		Country Residency:
 		<select name="data_Person_Residence_Country" form="data_Person_Residence_Country" data-check="false" data-selector="data_Person_Residence_State">
 			<!-- Get the details from an Ajax Call -->
-			<option value="N/S">Not 	Set</option>
-			<option value="GBR">United Kingdom</option>
 		</select>
 		<br>
 		Optional:
@@ -15,30 +13,25 @@
 		State Residency:
 		<select name="data_Person_Residence_State" form="data_Person_Residence_State"  data-check="true" data-upper-check="data_Person_Residence_Country" data-selector="data_Person_Residence_Region">
 			<!-- Get the details from an Ajax Call -->
-			<option value="N/S">Not 	Set</option>
 		</select>
 		<br/>
 		Region Residency:
 		<select name="data_Person_Residence_Region" form="data_Person_Residence_Region"  data-check="true" data-upper-check="data_Person_Residence_State" data-selector="data_Person_Residence_Area">
 			<!-- Get the details from an Ajax Call -->
-			<option value="N/S">Not 	Set</option>
 		</select>
 		<br/>
 		Area Residency:
 		<select name="data_Person_Residence_Area" form="data_Person_Residence_Area"  data-check="true" data-upper-check="data_Person_Residence_Region">
 			<!-- Get the details from an Ajax Call -->
-			<option value="N/S">Not 	Set</option>
 		</select><br>
 		Citizenship:
 		<select name="data_Person_Citizenship" form="data_Person_Citizenship" data-check="false">
 			<!-- Get the details from an Ajax Call -->
-			<option value="N/S">Not 	Set</option>
 		</select>
 		<br>
 		Marital-Status:
 		<select name="data_Person_Marital_Status" form="data_Person_Marital_Status"  data-check="false">
 			<!-- Get the details from an Ajax Call -->
-			<option value="N/S">Not 	Set</option>
 		</select>
 		<br/>
 		Age (Enter Birthday):
@@ -54,26 +47,23 @@
 <div class = "box right" id="Economic_Data_Class">
 	Enter your income details:
 	<form name="Economic_Data_Class">
-		Income:
-		<input type="integer" min="0" name="data_Income_Size" size="20">
+		Yearly Income:
+		<input type="number" min="0" name="data_Income_Size" size="20">
 		<br>
 		Currency:
 		<select name="data_Income_Currency" form="data_Income_Currency"  data-check="false">
 			<!-- Get the details from an Ajax Call -->
-			<option value="N/S">Not 	Set</option>
 		</select>
 		<br>
 		Source of Income:
 		<select name="data_Income_Source" form="data_Income_Source" data-check="false">
 			<!-- Get the details from an Ajax Call -->
-			<option value="N/S">Not 	Set</option>
 		</select>
 		<br>
 		Country Level Location of Earnings:
 		<br>
 		<select name="data_Income_Location_Country" form="data_Income_Location_Country" data-check="false" data-selector="data_Income_Location_State">
 			<!-- Get the details from an Ajax Call -->
-			<option value="N/S">Not 	Set</option>
 		</select>
 		<br>
 		Optional:
@@ -82,39 +72,37 @@
 		<br>
 		<select name="data_Income_Location_State" form="data_Income_Location_State" data-check="true" data-upper-check="data_Income_Location_Country" data-selector="data_Income_Location_Region">
 			<!-- Get the details from an Ajax Call -->
-			<option value="N/S">Not 	Set</option>
 		</select>
 		<br>
 		Region Level Location of Earnings:
 		<br>
 		<select name="data_Income_Location_Region" form="data_Income_Location_Region" data-check="true" data-upper-check="data_Income_Location_State" data-selector="data_Income_Location_Area">
 			<!-- Get the details from an Ajax Call -->
-			<option value="N/S">Not 	Set</option>
 		</select>
 		<br>
 		Area Level Location of Earnings:
 		<br>
 		<select name="data_Income_Location_Area" form="data_Income_Location_Area" data-check="true" data-upper-check="data_Income_Location_Region">
 			<!-- Get the details from an Ajax Call -->
-				<option value="N/S">Not 	Set</option>
 		</select>
 		<br>
 		Date Income Earned:
 		<input name="data_Income_Date_Earned" type="text" id="Datepicker_Income">
+		<div>The British Tax Year Starts on the 6th of April</div>
+		Assets Holding Periond in Days: (For Capital Gains/Dividends/Interest if nothing is put it will be 0)
+		<input type="number" min="0" name="data_Income_Assets_Holding_Period_Days" size="9">
 		<br>
-		Assets Holding Periond in Days:
-		<input type="integer" min="0" name="data_Income_Assets_Holding_Period_Days" size="5">
+		Controlling Interest in the Entity: (percentages)
+		<input type="number" min="0" max="100" name="data_Income_Controlling_Interest">%
 		<br>
 		Economic Sector:
 		<select name="data_Income_Economic_Sector" form="data_Income_Economic_Sector"  data-check="false">
 			<!-- Get the details from an Ajax Call -->
-			<option value="N/S">Not     Set</option>
 		</select>
 		<br>
 		Specific Profession:
 		<select name="data_Income_Specific_Profession" form="data_Income_Specific_Profession"  data-check="false">
 			<!-- Get the details from an Ajax Call -->
-			<option value="N/S">Not     Set</option>
 		</select>
 		<br>
 	</form>

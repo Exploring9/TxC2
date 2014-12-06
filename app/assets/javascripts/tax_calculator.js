@@ -2,370 +2,442 @@
 // All this logic will automatically be available in application.js.
 // You can use CoffeeScript in this file: http://coffeescript.org/
 // Use Gon to transfer between rails and javascript
-
 //TODO I stopped here (Number of Income), for the next steps, i should add instances for
 // income objects so that they show up on the browser - done
 // Then I should create a way for them to delete these things - done
-
 // Then I should do a thing so that people can select more regions
 // And other economic details - Jquery click and they ajax more info
-
 // Then I will have to perform the ajax thing to send the info to the server
-// Then I will have to change the back-end to accept this info
+// I will select all of the created classes and then I will send the info with the controller to the back-end
 // Then I will implement the class creation for the back end (with all the details that were provided)
 // Then I will create the tax class objects that will select all of the necessary tax rates from the databases
 // This will happen through validations since there will be many tax classes
 // I.e check they residency requirements, the size of their income, their professions and so on.
-
 // Think of rearranging the income details according to their numbers //Use Jquery insertBefore to achieve this! // Not a priority
-/*========================================================================*/
-// TODO 1st Part Creating the Environment:
-// A) Creating the Data Pickers
-var Environment_Creation_Tax = {
-	//Create the Alert message box for that the upper locations are set
-	Messages_And_Fetcher_For_Locations : function() {
-		//Split this into two function [first] -> get the value once it is set by the upper location
-		// Second that messages error messages when the above value is not set
-		$("select[data-check=true]").focus(function() {
-			console.log("Test: Messages_And_Fetcher_For_Locations");
-			//console.log(this); console.log(this["outerHTML"]); console.log(this.getAttribute("data-upper-check"));
-			var check_location = this.getAttribute("data-upper-check");
-			var for_whom_to_add = this.getAttribute("name");
-			var what_to_append_upper_location = $("select[name=" + check_location + "]").val();
-			Environment_Creation_Tax.Check_Upper_Location(check_location, for_whom_to_add, what_to_append_upper_location);
-		});
-	},
-	Preload_Lower_Location : function() {
-		$("select[data-selector]").change(function() {
-			console.log("Preload_Lower_Location -> data-selector=true DOM's elements value was chagned -> Changes will be done in the back-end");
-			if (this["value"] !== "N/S") {
-				console.log("Getting the Pre-Loaded value from the DB");
-				Environment_Creation_Tax.Select_Option_Fetcher_Single(this);
-			}
-		});
-	},
-
-	Check_Upper_Location : function(check_location, for_whom_to_add, what_to_append_upper_location) {
-		//console.log("I am in check_Upper_Location");
-		console.log(check_location);
-		console.log(for_whom_to_add);
-		console.log(what_to_append_upper_location);
-		//Delete the previous element
-		$('.alert').remove();
-		if (Add_Details_Tax.Get_Information_Details(check_location).toString() === "N/S") {
-			console.log("In the append function for the values that are not set");
-			//Append an element and then when he clicks on something else make it empty class="alert"
-			$("<div class=alert>This is not set: " + check_location + "</div>").insertAfter("select[name=" + for_whom_to_add + "]");
-		}
-	},
-	Date_Picker_Creation : function() {
-		$("#Datepicker_Income").datepicker({
-			changeMonth : true,
-			changeYear : true,
-			dateFormat : "yy-mm-dd",
-			yearRange : "2014:2015",
-		});
-		$("#Datepicker_Birthday").datepicker({
-			changeMonth : true,
-			changeYear : true,
-			dateFormat : "yy-mm-dd",
-			yearRange : "1900:2015",
-		});
-	},
-	Select_Option_Fetcher_Preload : function(Selected_Element) {
-		var selection_test;
-		// Get name and outherHTML
-		var Selected_Element_List = {
-			"name" : [],
-			"outerHTML" : [],
-		};
-		//This is to select either the auto_load DOM elements or let the other one be loaded
-		if (Selected_Element === "auto_load") {
-			console.log($("*[data-check=false]"));
-			selection_test = $("*[data-check=false]");
-		}
-		//Now try to get all of the DOM elements with data-check marked false
-		for (var i = 0; i < selection_test.length; i++) {
-			//console.log(i); console.log(selection_test);
-			Selected_Element_List["name"].push(selection_test[i]["name"]);
-			Selected_Element_List["outerHTML"].push(selection_test[i]["outerHTML"]);
-		}
-
-		console.log(Selected_Element_List);
-		Send_Receive_Backend_Data.Ajax_Send_Fetcher(Selected_Element_List);
-	},
-	Select_Option_Fetcher_Single : function(Selected_Element) {
-		var selection_test = Selected_Element;
-		// Get name and outherHTML
-		var Selected_Element_List = {
-			"name" : [],
-			"outerHTML" : [],
-			"data-selector" : [],
-			"selected" : [],
-		};
-		//Now try to get all of the DOM elements with data-check marked false
-		Selected_Element_List["name"].push(selection_test["name"]);
-		Selected_Element_List["outerHTML"].push(selection_test["outerHTML"]);
-		Selected_Element_List["data-selector"].push(selection_test.getAttribute("data-selector"));
-		Selected_Element_List["selected"].push(selection_test["value"]);
-
-		console.log(Selected_Element_List);
-		Send_Receive_Backend_Data.Ajax_Send_Fetcher(Selected_Element_List);
-	},
-};
-// TODO 2nd Create the Class for holding data
-// A) Create the NameSpace Mandotory Information
-var Mandotory_Information_Tax = {
-	// This is to check whether the class can be created
-	// These variable must be present in the HTML (Plus - specify what div it has)
-	// Enter whay type of data it must be string/integer and so on
-	Personal_Data_Class : {
-		data_Person_Residence_Country : true,
-	},
-	Economic_Data_Class : {
-		data_Income_Size : true,
-		data_Income_Currency : true,
-		data_Income_Source : true,
-		data_Income_Location_Country : true,
-	},
-};
-// B) Create the Personal Tax Object
-var Personal_Data_Class = function() {
-	// Variables that need to be set
-	// Personal Details: //
-	// Mandotory
-	this.data_Person_Residence_Country = Add_Details_Tax.Get_Information_Details("data_Person_Residence_Country");
-	// Optional
-	//Location: State -> Region -> Area
-	this.data_Person_Residence_State = Add_Details_Tax.Get_Information_Details("data_Person_Residence_State");
-	this.data_Person_Residence_Region = Add_Details_Tax.Get_Information_Details("data_Person_Residence_Region");
-	this.data_Person_Residence_Area = Add_Details_Tax.Get_Information_Details("data_Person_Residence_Area");
-	// Others:
-	this.data_Person_Citizenship = Add_Details_Tax.Get_Information_Details("data_Person_Citizenship");
-	this.data_Person_Marital_Status = Add_Details_Tax.Get_Information_Details("data_Person_Marital_Status");
-	this.data_Person_Birthday = Add_Details_Tax.Get_Information_Details("data_Person_Birthday");
-	this.data_Person_Number_Of_Children = Add_Details_Tax.Get_Information_Details("data_Person_Number_Of_Children");
-};
-// C) Create the Economic Data Object
-var Economic_Data_Class = function(instance_number) {
-	// Income Details: //
-	// Automatic:
-	this.data_Income_Instance = instance_number;
-	// Mandotory:
-	this.data_Income_Size = Add_Details_Tax.Get_Information_Details("data_Income_Size");
-	this.data_Income_Currency = Add_Details_Tax.Get_Information_Details("data_Income_Currency");
-	this.data_Income_Source = Add_Details_Tax.Get_Information_Details("data_Income_Source");
-	this.data_Income_Location_Country = Add_Details_Tax.Get_Information_Details("data_Income_Location_Country");
-	//Optional:
-	//Location: State -> Region -> Area
-	this.data_Income_Location_State = Add_Details_Tax.Get_Information_Details("data_Income_Location_State");
-	this.data_Income_Location_Region = Add_Details_Tax.Get_Information_Details("data_Income_Location_Region");
-	this.data_Income_Location_Area = Add_Details_Tax.Get_Information_Details("data_Income_Location_Area");
-	this.data_Income_Date_Earned = Add_Details_Tax.Get_Information_Details("data_Income_Date_Earned");
-	this.data_Income_Assets_Holding_Period_Days = Add_Details_Tax.Get_Information_Details("data_Income_Assets_Holding_Period_Days");
-	this.data_Income_Economic_Sector = Add_Details_Tax.Get_Information_Details("data_Income_Economic_Sector");
-	this.data_Income_Specific_Profession = Add_Details_Tax.Get_Information_Details("data_Income_Specific_Profession");
-};
-
-// TODO 3rd Part Let the classes be created
-var Add_Details_Tax = {
-	Personal_Data_Class : function(scope_document_ready) {
-		// Call the function that will check whether we have all of the // mandatory information
-		var has_mandatory_information = Add_Details_Tax.check_details(Mandotory_Information_Tax.Personal_Data_Class);
-		console.log(has_mandatory_information);
-		if (has_mandatory_information === true) {
-			// Call a function that will create the class
-			scope_document_ready.Personal_Data_Class_Created = new Personal_Data_Class();
-		} else {
-			// Call the function that will launch an error message, and later Also let the user post if this is a bug
-			Error_Message_Tax.Add_Details_Tax(has_mandatory_information);
-		}
-	},
-	Economic_Data_Class : function(scope_document_ready) {
-		// Call the function that will check whether we have all of the
-		// mandatory information
-		var has_mandatory_information = Add_Details_Tax.check_details(Mandotory_Information_Tax.Economic_Data_Class);
-		//console.log(has_mandatory_information);
-		if (has_mandatory_information === true) {
-			// Check what will be a free name for the class // Call a function to see how many Economic_Data_Class Objects exists and which one should be the next one
-			console.log(Add_Details_Tax.Number_of_Classes("Economic_Data_Class", scope_document_ready));
-			// Save it to variable so that Add_Details_To_Webpage knows which element to create
-			scope_document_ready.created_class = Add_Details_Tax.Number_of_Classes("Economic_Data_Class", scope_document_ready);
-			// Decide the number of the class
-			var number_of_the_class = scope_document_ready.created_class.replace("Economic_Data_Class_Created_", "");
-			// Get the digit
-			// Call a function that will create the class
-			console.log("Economic_Data_Class creation process");
-			console.log(scope_document_ready.created_class);
-			console.log(number_of_the_class);
-			scope_document_ready[Add_Details_Tax.Number_of_Classes("Economic_Data_Class", scope_document_ready)] = new Economic_Data_Class(number_of_the_class);
-		} else {
-			// Call the function that will launch an error message, and later Also let the user post if this is a bug
-			Error_Message_Tax.Add_Details_Tax(has_mandatory_information);
-		}
-	},
-	//First check whether all the necessary data is put in
-	check_details : function(mandotory) {
-		var must_have_information = _.pairs(mandotory);
-		console.log(must_have_information);
-		// Create a loop that checks whether these values are set: // If not then alert
-		for (var i = 0; i < must_have_information.length; i++) {
-			var what_to_check = must_have_information[i][0];
-			console.log("I am in check_details");
-			//console.log(what_to_check); // console.log(what_to_check); console.log(Add_Details_Tax.Get_Information_Details(what_to_check));
-			if (Add_Details_Tax.Get_Information_Details(what_to_check) === "" || Add_Details_Tax.Get_Information_Details(what_to_check) === "N/S") {
-				return what_to_check;
-			}
-		};
-		return true;
-	},
-	//This gets the actuall information from the website
-	Get_Information_Details : function(name_of_the_element_where_the_value_is) {
-		return $('[name=' + name_of_the_element_where_the_value_is + ']').val();
-	},
-	//This is used to determine what number will be at the end of a class
-	Number_of_Classes : function(name_of_the_class, scope) {
-		for (var i = 1; i < 999; i++) {
-			var does_this_name_exist = name_of_the_class + "_Created_" + i;
-			//console.log("I am in the Number_of_Classes"); console.log(does_this_name_exist); console.log(scope);
-			if (scope[does_this_name_exist] === undefined) {
-				return does_this_name_exist;
-			}
-		}
-	},
-};
-
-// TODO 4th Part let the details be added to the webpage
-var Add_Details_To_Webpage = {
-	//Add these details to the webpage
-	Add_Personal_Details_To_Webpage : function(Object_Add_Details) {
-		$('#Personal_Data_Class_Display').empty();
-		var add_this_to_the_webpage = "";
-		var extract_arrays_add_to_webpage = _.pairs(Object_Add_Details);
-		for (var i = 0; i < extract_arrays_add_to_webpage.length; i++) {
-			add_this_to_the_webpage = add_this_to_the_webpage + '<div id=' + extract_arrays_add_to_webpage[i][0] + '>' + extract_arrays_add_to_webpage[i][0] + ": " + extract_arrays_add_to_webpage[i][1] + '</div>';
-		}
-		$('#Personal_Data_Class_Display').append(add_this_to_the_webpage);
-	},
-	Add_Economic_Data_To_Webpage : function(Object_Add_Details) {
-		console.log(Object_Add_Details);
-		console.log(Object_Add_Details.data_Income_Instance);
-		var add_this_to_the_webpage = "";
-		var name_div_element_for_Economic_Data_Class = "Economic_Data_Class_Created_" + Object_Add_Details.data_Income_Instance;
-		var name_div_element_added = "<div id=" + name_div_element_for_Economic_Data_Class + "></div>";
-		var extract_arrays_add_to_webpage = _.pairs(Object_Add_Details);
-		for (var i = 0; i < extract_arrays_add_to_webpage.length; i++) {
-			add_this_to_the_webpage = add_this_to_the_webpage + '<div name=' + extract_arrays_add_to_webpage[i][0] + '>' + extract_arrays_add_to_webpage[i][0] + ": " + extract_arrays_add_to_webpage[i][1] + '</div>';
-		}
-		add_this_to_the_webpage = add_this_to_the_webpage + "<input type='button' value='Clear Income Details' class='Clear_Economic_Data' id=" + name_div_element_for_Economic_Data_Class + "><br>";
-		$("#Economic_Data_Class_Display").append(name_div_element_added);
-		$('#' + name_div_element_for_Economic_Data_Class).append(add_this_to_the_webpage + "<br>");
-	},
-	//This is for the preloaded information and information load when you selected the country
-	Add_Input_Data_To_Select : function(data) {
-		console.log("Add_Details_To_Webpage.Add_Input_Data_To_Select");
-		var data = data;
-		var data_names = Object.keys(data);
-		var length_of_loop = data_names.length;
-		var length_of_options;
-		//console.log(data_names);
-		for (var i = 0; i < length_of_loop; i++) {
-			//console.log(data_names[i]);
-			length_of_options = data[data_names[i]].length;
-			$("select[name=" + data_names[i] + "]").empty();
-			for (var x = 0; x < length_of_options; x++) {
-				//console.log(data[data_names[i]]); console.log(data[data_names[i]][x]);
-				$("select[name=" + data_names[i] + "]").append(data[data_names[i]][x]);
-			}
-			// Insert into the select the data-attribute that it won't need to download again
-		};
-	},
-	// Rearrange the HTML elements so that they are in a linear order (do it after an insert) // Not a priority
-};
-
-// TODO 5th Part Remove the classes and webpage (Only for Income Details where there are multiple of them)
-var Remove_Details_from_Webpage = {
-	// Remove these details from the webpage and set the variable to undefined so that it can be reused
-	Clear_Personal_Data : function(scope) {
-		$('#Personal_Data_Class_Display').empty();
-		scope.Personal_Data_Class_Created = undefined;
-	},
-	Clear_Economic_Data : function(scope, element_clicked) {
-		var element_to_be_deleted = $(element_clicked).attr('id');
-		$('#' + element_to_be_deleted).remove();
-		scope[element_to_be_deleted] = undefined;
-	},
-};
-
-// TODO 6th Part Send the information to the Server
-var Send_Receive_Backend_Data = {
-	Ajax_Send_Fetcher : function(Selected_Element) {
-		$.ajax({
-			type : 'POST',
-			url : 'http://localhost:3000/tax_calculator/sendInputData',
-			data : Selected_Element,
-			dataType : "json",
-			success : function(data) {
-				Add_Details_To_Webpage.Add_Input_Data_To_Select(data);
-			},
-			error : function(jqXHR, exception) {
-				alert(jqXHR);
-				alert(exception);
-			}
-		});
-	}
-};
-// TODO 7th Part Error Messages
-var Error_Message_Tax = {
-	Add_Details_Tax : function(error_message) {
-		alert("Please enter details for this:" + error_message);
-	},
-};
-
-//It is working without the authenticity token and the commit message
-$(document).ready(function() {
-	// Allowing to create classes and variables within this scope
-	var scope_document_ready = this;
-	var created_class = null;
-	// This is set to the latest income instance that was created
-	// 1st Part - Environment Creation
-	// Creating the calendar for date
-	Environment_Creation_Tax.Date_Picker_Creation();
-	// Creating the alert messages so that the person needs to select the upper location first:
-	Environment_Creation_Tax.Messages_And_Fetcher_For_Locations();
-	// Make the data pre-load when the uppper_location is selected
-	Environment_Creation_Tax.Preload_Lower_Location();
-	// Make this autoload
-	Environment_Creation_Tax.Select_Option_Fetcher_Preload("auto_load");
-
-	// 2nd Part Getting the data:
-	// This is the button to add the personal details:
-	// And to create the object for personal details/delete the old one
-	$('#Button_Add_Personal_Details').click(function() {
-		Add_Details_Tax.Personal_Data_Class(scope_document_ready);
-		//console.log(Object.keys(scope_document_ready));
-		// Add these details to the webpage //console.log(scope_document_ready.Personal_Data_Class_Created);
-		Add_Details_To_Webpage.Add_Personal_Details_To_Webpage(scope_document_ready.Personal_Data_Class_Created);
-	});
-	// This is the button to add income and send them over to rails:
-	$('#Button_Add_Income_Details').click(function() {
-		Add_Details_Tax.Economic_Data_Class(scope_document_ready);
-		// Add these details to the webpage console.log(created_class); console.log(scope_document_ready[scope_document_ready.created_class]);
-		Add_Details_To_Webpage.Add_Economic_Data_To_Webpage(scope_document_ready[scope_document_ready.created_class]);
-	});
-	//3rd Part Removing unwanted data:
-	// Reset Personal Details:
-	$('#Clear_Personal_Details').click(function() {
-		Remove_Details_from_Webpage.Clear_Personal_Data(scope_document_ready);
-	});
-	// Get rid of an income:
-	$('body').on("click", '.Clear_Economic_Data', function() {
-		console.log("In the proccess of getting rid of the income");
-		Remove_Details_from_Webpage.Clear_Economic_Data(scope_document_ready, this);
-	});
-
-	// Do it like in the game => store the information in javascript
-	$('#Button_Calculate_Taxes').click(function() {
-		//	SendPersonalAndTaxInformation();
-	});
-});
+/*=========================================================================*/
+//NEW Coding style
+// Everything is in a self-evoking function
+// I will only expose what needs to be returned
+// I will group everything by module
+(function ($, window) {
+  "use strict";
+  $(document).ready(function () {
+    //Scoping variables
+    var GLOBAL_SCOPE = window;
+    var DOCUMENT_READY_SCOPE = this;
+    var created_economic_class = null;
+    //TODO 1th Grounding Functions
+    var useful_Function = {
+      get_DOM_Details: function (name_element_where_the_value_is) {
+        return $('[name=' + name_element_where_the_value_is + ']').val();
+      },
+      warning_Missing_Information: function (message) {
+        alert("You need to enter this information: " + message);
+      },
+      error_Information: function (message) {
+        alert("Error: " + message);
+      }
+    };
+    //TODO 2nd Environtment Creation
+    var environment_Creation_Tax = {
+      date_Picker_Creation: function () {
+        //This is to create the DataPicker
+        $("#Datepicker_Income").datepicker({
+          changeMonth: true,
+          changeYear: true,
+          dateFormat: "yy-mm-dd",
+          yearRange: "2014:2015"
+        });
+        $("#Datepicker_Birthday").datepicker({
+          changeMonth: true,
+          changeYear: true,
+          dateFormat: "yy-mm-dd",
+          yearRange: "1900:2015"
+        });
+      },
+      //PART - A Establishing whether all the needed information is there for a preload
+      information_Upper_Location_Checker: function () {
+        //This Checks that the upper location is set when the user mouses over
+        $("select[data-check=true]").focus(function () {
+          console.log("This is the environmentCreationTax.information_Upper_Location_Checker");
+          var clicked_location = this.getAttribute("data-upper-check");
+          var to_whom_to_add = this.getAttribute("name");
+          $('.alert').remove();
+          if (!useful_Function.get_DOM_Details(clicked_location)) {
+            console.log("In the append function for the values that are not set");
+            //Append an element and then when he clicks on something else make it empty class="alert"
+            $("<div class=alert>This is not set: " + clicked_location + "</div>").insertAfter("select[name=" + to_whom_to_add + "]");
+          }
+        });
+      },
+      //PART - B [Creating all of the variables to get the INFO from the DB]
+      information_Fetcher_Single: function () {
+        $("select[data-selector]").change(function () {
+          //The elements that I will get once an upper location is selected is loaded automatically
+          //data-selector and selected (Whilst outerHTML is for more info)
+          console.log("This is true - change upper location");
+          var selection_scope = this;
+          console.log(selection_scope);
+          console.log(selection_scope["value"]);
+          //The elements that I will preload only need name
+          var selected_Element_List = {
+            "name": [],
+            "outerHTML": [],
+            "data-selector": [],
+            "selected": []
+          };
+          selected_Element_List["name"].push(selection_scope["name"]);
+          selected_Element_List["outerHTML"].push(selection_scope["outerHTML"]);
+          selected_Element_List["data-selector"].push(selection_scope.getAttribute("data-selector"));
+          selected_Element_List["selected"].push(selection_scope["value"]);
+          console.log(selected_Element_List);
+          ajax_Caller.ajax_Get_Input(selected_Element_List);
+        });
+      },
+      // BELOW IS THE MASS ADDITION
+      information_Fetcher: function () {
+        var selection_scope = $("*[data-check=false]");
+        //The elements that I will p reload only need name
+        var selected_Element_List = {
+          "name": [],
+          "outerHTML": [],
+        };
+        for (var i = 0; i < selection_scope.length; i++) {
+          var selection = selection_scope[i]; //console.log(selection);
+          selected_Element_List["name"].push(selection["name"]);
+          selected_Element_List["outerHTML"].push(selection["outerHTML"]);
+        }
+        ajax_Caller.ajax_Get_Input(selected_Element_List);
+      },
+      //PART - C This is called once the information is received back from the DB (Ajax Call)
+      add_Input_Data: function (data) {
+        console.log("information_Fetcher.Add_Input_Data_To_Select");
+        var data = data;
+        console.log(data);
+        var data_names = Object.keys(data);
+        var length_of_loop = data_names.length;
+        for (var i = 0; i < length_of_loop; i++) {
+          //console.log(data_names[i]);
+          var length_of_options = data[data_names[i]].length;
+          $("select[name=" + data_names[i] + "]").empty();
+          for (var x = 0; x < length_of_options; x++) {
+            //console.log(data[data_names[i]]); console.log(data[data_names[i]][x]);
+            $("select[name=" + data_names[i] + "]").append(data[data_names[i]][x]);
+          }
+        };
+      }
+    };
+    //TODO 3rd Add Mandotory Information Tax
+    var mandatory_Information_Objects = {
+      // This is to check whether the class can be created
+      // These variable must be present in the HTML (Plus - specify what div it has)
+      // Enter whay type of data it must be string/integer and so on
+      personal_Data_Object: {
+        data_Person_Residence_Country: true,
+      },
+      economic_Data_Object: {
+        data_Income_Size: true,
+        data_Income_Currency: true,
+        data_Income_Source: true,
+        data_Income_Location_Country: true,
+      },
+    };
+    //TODO 4th Create the Personal Data Object
+    // A) Create the Personal Tax Object
+    var personal_Data_Object = function () {
+      // Variables that need to be set
+      // Personal Details: //
+      // Mandotory
+      this.data_Person_Residence_Country = useful_Function.get_DOM_Details("data_Person_Residence_Country");
+      // Optional
+      //Location: State -> Region -> Area
+      this.data_Person_Residence_State = useful_Function.get_DOM_Details("data_Person_Residence_State");
+      this.data_Person_Residence_Region = useful_Function.get_DOM_Details("data_Person_Residence_Region");
+      this.data_Person_Residence_Area = useful_Function.get_DOM_Details("data_Person_Residence_Area");
+      // Others:
+      this.data_Person_Citizenship = useful_Function.get_DOM_Details("data_Person_Citizenship");
+      this.data_Person_Marital_Status = useful_Function.get_DOM_Details("data_Person_Marital_Status");
+      this.data_Person_Birthday = useful_Function.get_DOM_Details("data_Person_Birthday");
+      this.data_Person_Number_Of_Children = useful_Function.get_DOM_Details("data_Person_Number_Of_Children");
+    };
+    //B) Functions:
+    var personal_Data_Object_Addition = function () {
+      var check_For_Details = function () {
+        console.log("In personal_Data_Object_Addition.check_For_Details");
+        var mandatory_information = _.pairs(mandatory_Information_Objects.personal_Data_Object);
+        for (var i = 0; i < mandatory_information.length; i++) {
+          var what_to_check = mandatory_information[0][0];
+          console.log(useful_Function.get_DOM_Details(what_to_check));
+          if (!useful_Function.get_DOM_Details(what_to_check)) {
+            warning_Missing_Information();
+            return false;
+          }
+        };
+        return true;
+      };
+      var warning_Missing_Information = function () {
+        useful_Function.warning_Missing_Information("country residence");
+      };
+      //Create personal_Data_Object and add to the details to the webpage
+      var create_personal_Data_Object = function () {
+        DOCUMENT_READY_SCOPE.personal_Data_Object_Created = new personal_Data_Object();
+        console.log(DOCUMENT_READY_SCOPE.personal_Data_Object_Created);
+        add_personal_Data_Object_to_Website(DOCUMENT_READY_SCOPE.personal_Data_Object_Created);
+      };
+      var add_personal_Data_Object_to_Website = function (object) {
+        $('#Personal_Data_Class_Display').empty();
+        var add_to_webpage = "";
+        var extract_arrays_of_object = _.pairs(object);
+        for (var i = 0; i < extract_arrays_of_object.length; i++) {
+          //console.log(extract_arrays_of_object); console.log(extract_arrays_of_object[i]); console.log(extract_arrays_of_object[i][0]); console.log(extract_arrays_of_object[i][1]);
+          add_to_webpage = add_to_webpage + "<dvi id=" + extract_arrays_of_object[i][0] + ">" + extract_arrays_of_object[i][0] + ": " + extract_arrays_of_object[i][1] + "</div></br>";
+        }
+        $('#Personal_Data_Class_Display').append(add_to_webpage);
+      };
+      //===========================================================//
+      //Remove information from the website:
+      var remove_personal_Data_Object = function () {
+        $('#Personal_Data_Class_Display').empty();
+        DOCUMENT_READY_SCOPE.personal_Data_Object_Created = undefined;
+      };
+      //===========================================================//
+      return {
+        create_Personal_Object: function () {
+          $('#Button_Add_Personal_Details').click(function () {
+            if (check_For_Details()) {
+              console.log("personal_Data_Object_Addition check_For_Details() returned true");
+              create_personal_Data_Object();
+            }
+          });
+        },
+        remove_Personal_Object: function () {
+          $('#Clear_Personal_Details').click(function () {
+            remove_personal_Data_Object();
+          });
+        }
+      };
+    };
+    //TODO 5th Create the Economic Data Object
+    // A) Create the economic Data Object
+    var economic_Data_Object = function (instance_number) {
+      // Income Details: //
+      // Automatic:
+      this.data_Income_Instance = instance_number;
+      // Mandotory:
+      this.data_Income_Size = useful_Function.get_DOM_Details("data_Income_Size");
+      this.data_Income_Currency = useful_Function.get_DOM_Details("data_Income_Currency");
+      this.data_Income_Source = useful_Function.get_DOM_Details("data_Income_Source");
+      this.data_Income_Location_Country = useful_Function.get_DOM_Details("data_Income_Location_Country");
+      //Optional:
+      //Location: State -> Region -> Area
+      this.data_Income_Location_State = useful_Function.get_DOM_Details("data_Income_Location_State");
+      this.data_Income_Location_Region = useful_Function.get_DOM_Details("data_Income_Location_Region");
+      this.data_Income_Location_Area = useful_Function.get_DOM_Details("data_Income_Location_Area");
+      this.data_Income_Date_Earned = useful_Function.get_DOM_Details("data_Income_Date_Earned");
+      this.data_Income_Assets_Holding_Period_Days = useful_Function.get_DOM_Details("data_Income_Assets_Holding_Period_Days");
+      this.data_Income_Economic_Sector = useful_Function.get_DOM_Details("data_Income_Economic_Sector");
+      this.data_Income_Specific_Profession = useful_Function.get_DOM_Details("data_Income_Specific_Profession");
+      this.data_Income_Controlling_Interest = useful_Function.get_DOM_Details("data_Income_Controlling_Interest");
+    };
+    var economic_Data_Object_Addition = function () {
+      var check_For_Details = function () {
+        console.log("In personal_Data_Object_Addition.check_For_Details");
+        var mandatory_information = _.pairs(mandatory_Information_Objects.economic_Data_Object);
+        for (var i = 0; i < mandatory_information.length; i++) {
+          var what_to_check = mandatory_information[i][0];
+          console.log(what_to_check);
+          console.log(useful_Function.get_DOM_Details(what_to_check));
+          if (!useful_Function.get_DOM_Details(what_to_check)) {
+            warning_Missing_Information(what_to_check);
+            return false;
+          }
+        };
+        return true;
+      };
+      var warning_Missing_Information = function (message) {
+        console.log("In economic_Data_Object_Addition warning_Missing_Information()");
+        useful_Function.warning_Missing_Information(message);
+      };
+      var check_Number_of_Objects = function (object_name, scope) {
+        for (var i = 1; i < 99; i++) {
+          var object_name_searched = object_name + i;
+          if (scope[object_name_searched] === undefined /*|| scope[object_name_searched] === "Deleted"*/ ) {
+            return object_name_searched; //This the name that exists	
+          }
+        }
+        useful_Function.error_Information("Too many income objects, you created over:" + i);
+      };
+      var create_economic_Data_Object = function () {
+        //This is to get what class was created
+        var object_possible_name = check_Number_of_Objects("economic_Data_Object_Created_", DOCUMENT_READY_SCOPE);
+        DOCUMENT_READY_SCOPE.created_economic_class = object_possible_name;
+        //This is to get its number
+        var instance_number_of_object = DOCUMENT_READY_SCOPE.created_economic_class.replace("Economic_Data_Class_Created_", "");
+        DOCUMENT_READY_SCOPE[object_possible_name] = new economic_Data_Object(instance_number_of_object);
+        console.log("I am in economic_Data_Object_Addition -> create_economic_Data_Object");
+        console.log(Object.keys(DOCUMENT_READY_SCOPE));
+        add_economic_Data_Object_to_Website(DOCUMENT_READY_SCOPE[object_possible_name]);
+      };
+      var add_economic_Data_Object_to_Website = function (object_to_add) {
+        console.log(object_to_add);
+        var add_to_webpage = "";
+        var name_div_Economic_Object = object_to_add.data_Income_Instance;
+        console.log(name_div_Economic_Object);
+        var name_div_added = "<div id=" + name_div_Economic_Object + "></div>";
+        var arrays_add_to_webpage = _.pairs(object_to_add);
+        for (var i = 0; i < arrays_add_to_webpage.length; i++) {
+          add_to_webpage = add_to_webpage + '<div name=' + arrays_add_to_webpage[i][0] + '>' + arrays_add_to_webpage[i][0] + ": " + arrays_add_to_webpage[i][1] + '</div>';
+        }
+        add_to_webpage = add_to_webpage + "<input type='button' value='Clear Income Details' class='Clear_Economic_Data' id=" + name_div_Economic_Object + "><br>";
+        $("#Economic_Data_Class_Display").append(name_div_added);
+        console.log(add_to_webpage);
+        $('#' + name_div_Economic_Object).append(add_to_webpage + "<br>");
+      };
+      //===========================================================//
+      // Remove the income instance from the website and set the class to undefined
+      var remove_economic_Data_Object = function (element_clicked) {
+        var element_to_be_deleted = $(element_clicked).attr('id');
+        console.log(element_to_be_deleted);
+        $('#' + element_to_be_deleted).remove();
+        console.log(DOCUMENT_READY_SCOPE[element_to_be_deleted]);
+        DOCUMENT_READY_SCOPE[element_to_be_deleted] = undefined;
+        //I don't actually delete the class due to the overhead, but I make it undefined
+        console.log(DOCUMENT_READY_SCOPE[element_to_be_deleted]);
+        console.log(Object.keys(DOCUMENT_READY_SCOPE));
+      };
+      //===========================================================//
+      return {
+        create_Economic_Object: function () {
+          $("#Button_Add_Income_Details").click(function () {
+            if (check_For_Details()) {
+              console.log("economic_Data_Object_Addition check_For_Details() returned true");
+              create_economic_Data_Object();
+            } else {
+              console.log("economic-returned false");
+            }
+          });
+        },
+        remove_Economic_Object: function () {
+          $('body').on('click', '.Clear_Economic_Data', function () {
+            remove_economic_Data_Object(this);
+          });
+        }
+      };
+    };
+    //TODO 6th Sending the Information to Calculate the Taxes to the Server
+    var get_send_Info_To_Server = function () {
+      var get_Personal_Object = function (where_to_add) {
+        if (DOCUMENT_READY_SCOPE["personal_Data_Object_Created"] === undefined) {
+          useful_Function.warning_Missing_Information("Personal Details");
+          console.log("get_Personal_Object will return false");
+          return false;
+        } else {
+          where_to_add["personal_Data_Object_Created"] = DOCUMENT_READY_SCOPE["personal_Data_Object_Created"];
+        }
+      };
+      var get_Economic_Object = function (where_to_add) {
+        console.log(where_to_add);
+        var maximum_length = 99;
+        for (var number = 0; number < maximum_length; number++) {
+          var name_economic_Object = "economic_Data_Object_Created_" + number.toString();
+          if (DOCUMENT_READY_SCOPE[name_economic_Object] === undefined) {
+            console.log("This is undefined: ");
+            console.log(name_economic_Object);
+          } else {
+            where_to_add[name_economic_Object] = DOCUMENT_READY_SCOPE[name_economic_Object];
+          }
+        }
+        //Error Message if no income has been added // Object.keys().length is 1 because the personal information has already been added
+        //console.log(Object.keys(where_to_add)); // console.log(Object.keys(where_to_add).length);
+        if (Object.keys(where_to_add).length === 1) {
+          useful_Function.warning_Missing_Information("Income Information");
+          console.log("get_Economic_Object will return false");
+          return false;
+        }
+      };
+      var put_all_Information = function () {
+        DOCUMENT_READY_SCOPE.list_of_created_classes = {};
+        var scope = DOCUMENT_READY_SCOPE.list_of_created_classes;
+        get_Personal_Object(scope);
+        if(Object.keys(scope).length === 0){console.log("get_Personal_Object returned false - put_all_Information");return false;}
+        console.log(scope);
+        get_Economic_Object(scope);
+        if(Object.keys(scope).length === 1){console.log("get_Economic_Object returned false - put_all_Information");return false;}       
+        console.log(scope);
+        return scope;
+      };
+      return {
+        get_send_Info: function () {
+          $('#Button_Calculate_Taxes').click(function () {
+            var send_info_to_Server = put_all_Information();
+            if(send_info_to_Server === false){console.log("This returned an empty object"); return false;}
+            console.log("This information will be sent to the server");
+            console.log(send_info_to_Server);
+            ajax_Caller.ajax_send_personal_economical_info(send_info_to_Server);
+          });
+        }
+      };
+    };
+    //TODO 8th Ajax Caller
+    var ajax_Caller = {
+      ajax_Get_Input: function (selected_Element_List) {
+        $.ajax({
+          type: 'POST',
+          url: 'http://localhost:3000/tax_calculator/sendInputData',
+          data: selected_Element_List,
+          dataType: "json",
+          success: function (data) {
+            environment_Creation_Tax.add_Input_Data(data);
+          },
+          error: function (jqXHR, exception, errorThrown) {
+            alert(jqXHR);
+            alert(exception);
+            console.log(jqXHR);
+            console.log(exception);
+            console.log(errorThrown);
+          }
+        });
+      },
+      ajax_send_personal_economical_info: function (personal_economical_Information) {
+        $.ajax({
+          type: 'POST',
+          url: 'http://localhost:3000/tax_calculator/personalAndTaxInfo',
+          data: JSON.stringify(personal_economical_Information),
+          dataType: "json", //See if it works without the datatype
+          success: function (data) {
+            console.log(data);
+          },
+          error: function (jqXHR, exception, errorThrown) {
+            alert(jqXHR);
+            alert(exception);
+            console.log(jqXHR);
+            console.log(exception);
+            console.log(errorThrown);
+          }
+        });
+      },
+    };
+    //TODO Code Execution
+    //2nd Set the Date Picker:
+    environment_Creation_Tax.date_Picker_Creation();
+    //3rd Preload All of the Data
+    environment_Creation_Tax.information_Fetcher();
+    //4th Get the Single Info Preloaded
+    //Split this into checking and if okay calling
+    environment_Creation_Tax.information_Upper_Location_Checker();
+    environment_Creation_Tax.information_Fetcher_Single();
+    //5th 
+    //A) Create personal_Data_Object
+    personal_Data_Object_Addition().create_Personal_Object();
+    //B) Remove it from the website
+    personal_Data_Object_Addition().remove_Personal_Object();
+    //6th
+    //A) Create economic_Data_Object
+    economic_Data_Object_Addition().create_Economic_Object();
+    //B) Remove it from the website
+    economic_Data_Object_Addition().remove_Economic_Object();
+    //7th Send the Information to the Server through AJAX
+    get_send_Info_To_Server().get_send_Info();
+  });
+})(jQuery, window);
+// _ is to load underscore.js (I don't preload it)
