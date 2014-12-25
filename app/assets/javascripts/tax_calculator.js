@@ -25,7 +25,7 @@
     //Scoping variables
     var GLOBAL_SCOPE = window;
     var DOCUMENT_READY_SCOPE = this;
-    var created_economic_class = null;
+    var created_economic_class = null; //This to check how many economic objects have been created
     //TODO 1th Grounding Functions
     var useful_Function = {
       get_DOM_Details: function (name_element_where_the_value_is) {
@@ -127,6 +127,44 @@
         };
       }
     };
+    
+    var environment_Selection = function(){
+      var clear_Selection = function(){
+    	$("select[name=data_Person_Residence_Country], select[name=data_Income_Location_Country], select[name=data_Person_Residence_State], select[name=data_Income_Location_State]").change(function(){
+    	   console.log("You are in environment_Selection -> country_Clear_Selection function");
+    	   var selected_element_html = this.name;
+
+    	   var clearing_Function = {
+    	     "data_Income_Location_Country": function(){
+    	       console.log("Testing - clearing_Function");
+    	       $("select[name=data_Income_Location_Region]").empty(); 
+    	       $("select[name=data_Income_Location_Area]").empty(); 
+    	     },
+    	     "data_Income_Location_State": function(){
+    	       $("select[name=data_Income_Location_Area]").empty();        	     	
+    	     },
+    	     "data_Person_Residence_Country": function(){
+    	       $("select[name=data_Person_Residence_Region]").empty();
+    	       $("select[name=data_Person_Residence_Area]").empty();
+    	     },
+    	     "data_Person_Residence_State": function(){
+    	       $("select[name=data_Person_Residence_Area]").empty();
+    	     }
+    	   };
+    	  
+    	  clearing_Function[selected_element_html]();
+    	 }
+    	); 	
+      };
+      return {
+      	clear_Selection_Put_in_Info: function(){
+      	  console.log("You are in environment_Selection => Function country_Clear_Selection");
+      	  clear_Selection();
+      	}
+      };
+    };
+    
+    
     //TODO 3rd Add Mandotory Information Tax
     var mandatory_Information_Objects = {
       // This is to check whether the class can be created
@@ -426,6 +464,9 @@
     //Split this into checking and if okay calling
     environment_Creation_Tax.information_Upper_Location_Checker();
     environment_Creation_Tax.information_Fetcher_Single();
+    
+    //This is to clear a person's select options when he has chosen a different country or region'
+    environment_Selection().clear_Selection_Put_in_Info();
     //5th 
     //A) Create personal_Data_Object
     personal_Data_Object_Addition().create_Personal_Object();
@@ -441,3 +482,14 @@
   });
 })(jQuery, window);
 // _ is to load underscore.js (I don't preload it)
+
+// This is what I need to create - I need to add an empty thingy whenever the territory 
+// of a place that is above is changed
+
+// Add this to the listening event that is already present
+// 1st => Get the HTML attribute
+// 2nd => See if it is changed
+// if yes then empty the things that are below (State -> Region/Area) and for Country everything
+// This only applies to region and area
+// When the country is selected both region and area must be reset
+// When the state is selected - the area must be reset

@@ -1,4 +1,4 @@
-require_relative '../fetch_data_from_database/interface_access'
+require_relative '../../fetch_data_from_database/interface_access'
 
 class CreateIncomeInstanceObjectNumber
   attr_reader :income_instance, :income_size, :income_currency, :income_source, :income_location_country, :income_location_id_country, :income_location_state, :income_location_id_state, :income_location_region, :income_location_id_region, :income_location_area, :income_location_id_area, :income_date_earned, :income_assets_holding_period_days, :income_economic_sector, :income_specific_profession, :income_residence_currency, :id_Link_type_of_tax_and_economic_activity, :income_controlling_interest

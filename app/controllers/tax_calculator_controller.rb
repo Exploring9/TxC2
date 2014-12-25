@@ -1,7 +1,7 @@
 require_relative '../../lib/database_insertions/active_record_insertions' #This is to include a file
 require_relative '../../lib/tax_calculations_start/tax_calculations_start' #This is to include the file where the tax calculation process will start
 require_relative '../../sequel_database/testing_sequel'
-require_relative '../../lib/fetch_data_from_database/get_input_data'#This where I will get the data from the database
+require_relative '../../lib/fetch_data_from_database/input_data/get_input_data'#This where I will get the data from the database
 
 class TaxCalculatorController < ApplicationController
   include ActiveRecordInsertions #Needed to put the information in the database

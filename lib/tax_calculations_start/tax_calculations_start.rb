@@ -1,9 +1,8 @@
-require_relative '../../lib/class_creations/create_searcher_object' #This is to create CreateSearcherObject.new
-require_relative '../../lib/class_creations/create_tax_instance_object_number'
-require_relative '../../lib/class_creations/create_income_instance_object_number' #This is to create CreateIncomeInstanceObjectNumber.new
-require_relative '../../lib/class_creations/create_total_income_object' #This is to create CreateTotalIncomeObject.new
+require_relative '../../lib/class_creations/searcher_class/create_searcher_object' #This is to create CreateSearcherObject.new
+require_relative '../../lib/class_creations/tax_class/create_tax_instance_object_number'
+require_relative '../../lib/class_creations/income_class/create_income_instance_object_number' #This is to create CreateIncomeInstanceObjectNumber.new
+require_relative '../class_creations/income_class/create_total_income_object' #This is to create CreateTotalIncomeObject.new
 require_relative '../../lib/tax_calculations_execution/tax_calculations_execution'
-require_relative '../../lib/class_creations/create_tax_instance_object_number'
 
 module TaxCalculationsStart
   #objects_id is the id number to find all of the information put in the DB_Testing_User with active records
@@ -11,8 +10,8 @@ module TaxCalculationsStart
     puts "In the call_the_object_creator"
     # Call the method to create CreateIncomeInstanceObjectNumber 
     # Call a method in module Create object: create the object
-    @number_of_income_hash = {};  
-    @number_of_tax_hash = {};
+    @number_of_income_hash = {};  #This is where all of the income_instances are created and they are all numbered
+    @number_of_tax_hash = {}; 
     @total_income_object = "";
     @personal_information_searcher_object = CreateSearcherObject.new(objects_id);
     #This is to create all of the income object classes
@@ -31,9 +30,9 @@ module TaxCalculationsStart
 
     #We will create separate instances of income in the hash
     for instance in 1..@personal_information_searcher_object.number_of_income do
+      #TODO factorize this into a local variable and supply the full name!!!
       @number_of_income_hash[("income_instance_object_"+instance.to_s).to_sym] = CreateIncomeInstanceObjectNumber.new(objects_id,instance);
     end
-    
     
     puts "This is @number_of_income_hash"
     puts @number_of_income_hash
@@ -52,9 +51,11 @@ module TaxCalculationsStart
     puts number_of_income_array.inspect;
     for instance in 1..@number_of_income_hash.length do
       income_hash_info = number_of_income_array[instance-1][1]
-      @number_of_tax_hash[("tax_instance_object_"+instance.to_s).to_sym] = CreateTaxInstanceObjectNumber.new(@personal_information_searcher_object,income_hash_info);
+      instance_name = ("tax_instance_object_"+instance.to_s).to_sym
+      @number_of_tax_hash[instance_name] = CreateTaxInstanceObjectNumber.new(@personal_information_searcher_object,income_hash_info,instance_name);
       puts income_hash_info.inspect
     end
+    puts "This is @number_of_tax_hash:#{@number_of_tax_hash}"
   end
   
   def TaxCalculationsStart::create_total_tax_object_class()

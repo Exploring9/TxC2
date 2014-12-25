@@ -2,7 +2,7 @@
 require "yaml"
 require "sequel"
 
-file_path = File.expand_path "../../../config/sequel_database.yaml",__FILE__
+file_path = File.expand_path "../../../../config/sequel_database.yaml",__FILE__
 file = YAML.load_file(file_path);
 DB = Sequel.connect(file)
 # => End of the code
@@ -10,7 +10,7 @@ puts "Sequel connection file"
 puts file
 
 # Preloading the data for the Class Creation 
-require_relative "../class_creations/create_get_send_input_data_sequel"
+require_relative "../../class_creations/input_data_class/create_get_send_input_data_sequel"
 
 module GetInputData
  

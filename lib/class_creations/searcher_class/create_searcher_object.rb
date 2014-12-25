@@ -1,4 +1,4 @@
-require_relative '../fetch_data_from_database/interface_access'
+require_relative '../../fetch_data_from_database/interface_access'
 
 class CreateSearcherObject
   include InterfaceAccess
@@ -42,9 +42,9 @@ class CreateSearcherObject
     # table above to create )
     @id_citizenship = InterfaceAccess::Citizenship.handshake_get_id_citizenship_from_citizenship(@citizenship);
     
-    @id_marital_status = InterfaceAccess::PersonalDetails.handshake_marital_status();
+    @id_marital_status = InterfaceAccess::PersonalDetails.handshake_marital_status();# This returns 1
     
-    @id_age = InterfaceAccess::PersonalDetails.handshake_age();
+    @id_age = InterfaceAccess::PersonalDetails.handshake_age();# This returns 1
     
     @id_personal_characteristics = InterfaceAccess::PersonalCharacteristics.handshake_return_personal_characteristics_from_data(@id_citizenship,@id_marital_status,@id_age);
     

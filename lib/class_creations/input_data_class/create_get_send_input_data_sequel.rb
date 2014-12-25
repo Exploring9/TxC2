@@ -1,4 +1,4 @@
-require_relative '../../lib/database_equivalents/database_table_html_equivalents' #This is to get the relative database and html tables mapping for sequel
+require_relative '../../database_equivalents/database_table_html_equivalents' #This is to get the relative database and html tables mapping for sequel
 class CreateGetSendInputDataSequel
   include DatabaseTableHtmlEquivalents
   attr_reader :html_params, :table_name, :table_column_abbreviation, :table_column_name, :upper_location_name, :array_length,:html_element_name, :got_from_DB, :upper_table_column_abbreviation

@@ -1,4 +1,4 @@
-require_relative '../exchange_rate/find_the_exchange_rate' #This is to get the function to load up the exchange rate#
+require_relative '../../exchange_rate/find_the_exchange_rate' #This is to get the function to load up the exchange rate#
 
 class CreateTotalIncomeObject
   attr_accessor :total_size_of_income, :currency_of_income, :parent_of_income 
@@ -7,6 +7,7 @@ class CreateTotalIncomeObject
   
   def initialize(number_of_income_hash,personal_information_searcher)
     puts "You are in CreateTotalIncomeObject"
+    
     puts number_of_income_hash.inspect;
     @personal_information_searcher = personal_information_searcher;
     puts @personal_information_searcher.inspect;
